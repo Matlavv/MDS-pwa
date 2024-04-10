@@ -1,64 +1,76 @@
-const VERSION = "v9";
-const HOST = location.protocol + "//" + location.host;
-const FILECACHE = [HOST + "/pwa/css/main.css"];
+const VERSION = "v13";
+const OFFLINE_URL = "/pwa/offline.html";
+const FILECACHE = [
+  "/pwa/css/styles.css",
+  "/pwa/index.html",
+  "/pwa/js/script.js",
+  "/pwa/snake.js",
+  OFFLINE_URL,
+  "https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css",
+];
 
-self.addEventListener("install", (e) => {
-  self.skipWaiting();
-  console.log("Version :", VERSION);
-  console.log("Host :", FILECACHE);
-
-  // mise en cache des fichiers souhaités
-  e.waitUntil(
-    (async () => {
-      const cache = await caches.open(VERSION);
-      // cache.add("./offline.html");
-      await Promise.all(
-        [...FILECACHE, "./offline.html", "/images/icons/icon48"].map((path) => {
-          return cache.add(path);
-        })
-      );
-    })()
+self.addEventListener("install", (event) => {
+  console.log("Filecache :", FILECACHE);
+  event.waitUntil(
+    caches
+      .open(VERSION)
+      .then((cache) => {
+        const cachePromises = FILECACHE.map((url) => {
+          return cache.add(url).catch((err) => {
+            console.error(`Échec de mise en cache de ${url}: ${err}`);
+          });
+        });
+        return Promise.all(cachePromises);
+      })
+      .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate", (e) => {
-  // une fois qu'on active le service worker, on supprime les anciens caches
-  e.waitUntil(
-    (async () => {
-      const keys = await caches.keys(); //récup toutes les clés du cache
-      await Promise.all(
-        keys.map((key) => {
-          if (key !== VERSION) return caches.delete(key);
-        })
+self.addEventListener("activate", (event) => {
+  console.log("Service Worker version " + VERSION + " is activating...");
+
+  // Nettoyage des anciennes versions du cache
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((cacheName) => cacheName !== VERSION)
+          .map((cacheName) => caches.delete(cacheName))
       );
-    })()
+    })
   );
 });
 
-self.addEventListener("fetch", (e) => {
-  console.log("Fetch :", e.request);
-  console.log("Fetch :", e.request.mode);
-
-  // si on lit une page, afficher un truc particulier
-  if (e.request.mode === "navigate") {
-    e.respondWith(
-      (async () => {
-        try {
-          // on charge la page demandée depuis la mémoire
-          const preloadedResponse = await e.preloadResponse;
-          // on la trouve donc on la renvoie
-          if (preloadedResponse) return preloadedResponse;
-
-          return await fetch(e.request);
-        } catch (error) {
-          const cache = await caches.open(VERSION);
-          return await cache.match("/pwa/offline.html"); // a personnaliser
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches
+      .match(event.request)
+      .then((response) => {
+        if (response) {
+          return response;
         }
-      })()
-    );
-  }
-  // pour les chargements qui ne sont pas en navigate
-  else if (FILECACHE.includes(e.request.url)) {
-    e.respondWith(caches.match(e.request));
-  }
+        return fetch(event.request).then((response) => {
+          if (
+            !response ||
+            response.status !== 200 ||
+            (response.type !== "basic" && response.type !== "cors")
+          ) {
+            return response;
+          }
+
+          const responseToCache = response.clone();
+          caches.open(VERSION).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+
+          return response;
+        });
+      })
+      .catch(() => {
+        // En cas d'échec de la récupération (hors ligne), retourne la page hors ligne pour les navigations
+        if (event.request.mode === "navigate") {
+          return caches.match(OFFLINE_URL);
+        }
+      })
+  );
 });

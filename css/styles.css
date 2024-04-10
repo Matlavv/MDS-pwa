@@ -1,0 +1,23 @@
+html {
+  font-family: Verdana, sans-serif;
+  background: #000;
+}
+
+body {
+  padding: 20px;
+}
+
+h1 {
+  color: #fff;
+}
+
+p {
+  color: gray;
+}
+
+#gameCanvas {
+  background-color: #c3c5fd;
+  display: block;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+}
