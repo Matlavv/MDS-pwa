@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("homeLink").addEventListener("click", function () {
     sessionStorage.removeItem("lastQuery");
     sessionStorage.removeItem("searchResults");
-    sessionStorage.removeItem("recentSearches"); // Optionnel : effacer aussi les recherches récentes
+    sessionStorage.removeItem("recentSearches");
   });
 
   searchForm.addEventListener("submit", function (event) {
