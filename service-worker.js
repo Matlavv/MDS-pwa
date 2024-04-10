@@ -27,7 +27,7 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("Service Worker version " + VERSION + " is activating...");
+  console.log("Service Worker version " + VERSION);
 
   // Nettoyage des anciennes versions du cache
   event.waitUntil(
