@@ -1,0 +1,21 @@
+{
+  "name": "Première PWA",
+  "short_name": "pwa1",
+  "start_url": "pwa/index.html",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#fff",
+  "description": "Une première PWA",
+  "icons": [
+    {
+      "src": "images/icons/icon48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
