@@ -1,10 +1,10 @@
 {
   "name": "Première PWA",
   "short_name": "pwa1",
-  "start_url": "pwa/index.html",
+  "start_url": "pwa/",
   "display": "standalone",
-  "background_color": "#fff",
-  "theme_color": "#fff",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "description": "Une première PWA",
   "icons": [
     {

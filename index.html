@@ -3,22 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000" />
     <title>PWA</title>
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <nav>
-      <a href="index.html">Go to page 1</a>
-      <a href="page2.html">Go to page 2</a>
-    </nav>
-    <h1>Page 1</h1>
-    <img src="images/icons/icon48.png" alt="logo" />
-
+  <body class="bg-black text-white">
+    <header class="p-5 flex flex-col md:flex-row items-center justify-between">
+      <a href="index.html" id="homeLink">
+        <h1 class="text-4xl font-bold">TV show</h1>
+      </a>
+      <form
+        id="searchForm"
+        class="flex flex-row items-center gap-2 mt-4 md:mt-0"
+      >
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Rechercher une série..."
+          class="text-black p-2 rounded"
+        />
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Rechercher
+        </button>
+      </form>
+    </header>
+    <div id="recentSearches" class="mt-4"></div>
+    <main class="p-5">
+      <div id="searchResults"></div>
+    </main>
     <script>
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/pwa/service-worker.js");
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/pwa/service-worker.js").then(
+            (registration) => {
+              console.log(
+                "ServiceWorker registration successful with scope: ",
+                registration.scope
+              );
+            },
+            (err) => {
+              console.log("ServiceWorker registration failed: ", err);
+            }
+          );
+        });
       }
     </script>
+
+    <script src="js/script.js"></script>
   </body>
 </html>
