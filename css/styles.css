@@ -1,6 +1,6 @@
 html {
   font-family: Verdana, sans-serif;
-  background: #eee;
+  background: #000;
 }
 
 body {
@@ -8,5 +8,9 @@ body {
 }
 
 h1 {
-  color: blue;
+  color: #fff;
+}
+
+p {
+  color: gray;
 }

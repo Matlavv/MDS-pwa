@@ -1,6 +1,6 @@
 const VERSION = "v9";
 const HOST = location.protocol + "//" + location.host;
-const FILECACHE = [HOST + "/pwa/css/main.css"];
+const FILECACHE = [HOST + "/pwa/css/styles.css"];
 
 self.addEventListener("install", (e) => {
   self.skipWaiting();
@@ -13,7 +13,7 @@ self.addEventListener("install", (e) => {
       const cache = await caches.open(VERSION);
       // cache.add("./offline.html");
       await Promise.all(
-        [...FILECACHE, "./offline.html", "/images/icons/icon48"].map((path) => {
+        [...FILECACHE, "./offline.html"].map((path) => {
           return cache.add(path);
         })
       );
